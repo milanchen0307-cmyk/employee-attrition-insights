@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>员工离职分组对比 · 模拟数据</title>
+<meta content="1,000 人模拟课程数据集中的员工离职分组对比：离职率、实际人数和 Wilson 95% 区间。" name="description"/>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F6F8FA;color:#1F2933;font:14px/1.5 "Segoe UI","Microsoft YaHei","PingFang SC",system-ui,-apple-system,Arial,sans-serif}
+a{color:#2563EB;text-underline-offset:2px}
+:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.top{background:#fff;border-bottom:1px solid #E3E8EE}
+.top-in{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:center}
+.top nav{display:flex;flex-wrap:wrap;gap:6px 18px}
+.top nav a{color:#334E68;text-decoration:none}
+.top nav a:hover{text-decoration:underline}
+.lang{display:inline-flex;border:1px solid #CBD2D9;border-radius:6px;overflow:hidden}
+.lang button{font-family:inherit;font-size:13px;font-weight:600;line-height:1;min-height:32px;padding:7px 12px;border:0;background:#fff;color:#334E68;cursor:pointer}
+.lang button+button{border-left:1px solid #CBD2D9}
+.lang button[aria-pressed="true"]{background:#2563EB;color:#fff}
+.page{max-width:1280px;margin:0 auto;padding:18px 24px 24px}
+.head h1{font-size:24px;font-weight:600;line-height:1.3;margin:0 0 4px}
+.head p{margin:0;font-size:14px;color:#5B6B7B}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:16px 0}
+.kpi{background:#fff;border:1px solid #E3E8EE;border-radius:8px;padding:12px 16px;min-width:0}
+.kpi .l{font-size:12px;color:#5B6B7B}
+.kpi .v{font-size:28px;font-weight:600;line-height:1.25;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:#5B6B7B;font-variant-numeric:tabular-nums}
+.qbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.qbar>span{font-size:12px;color:#5B6B7B;margin-right:4px}
+.qb{font-family:inherit;font-size:13px;padding:6px 12px;border:1px solid #CBD2D9;border-radius:6px;background:#fff;color:#334E68;cursor:pointer}
+.qb:hover{border-color:#2563EB}
+.qb[aria-pressed="true"]{background:#2563EB;border-color:#2563EB;color:#fff}
+.builder{margin:0 0 12px;padding:4px 0}
+.side{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:6px 16px;font-size:13px}
+.side b{min-width:3.5em}
+.side[data-g="A"] b{color:#2563EB}
+.side[data-g="B"] b{color:#B45309}
+.side label{display:inline-flex;gap:6px;align-items:center}
+.side .ck{gap:3px}
+.side input{accent-color:#2563EB;margin:0}
+select{font-family:inherit;font-size:13px;padding:5px 6px;border:1px solid #CBD2D9;border-radius:6px;background:#fff;color:#1F2933;max-width:100%}
+.grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px;align-items:start}
+.card{background:#fff;border:1px solid #E3E8EE;border-radius:8px;min-width:0}
+.card-h{padding:12px 16px;border-bottom:1px solid #E3E8EE}
+.card-h h2{font-size:15px;font-weight:600;margin:0}
+.body{padding:14px 16px 12px}
+.cmp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px 20px;align-items:center}
+.donuts{display:flex;gap:16px}
+.dn{margin:0;width:128px;text-align:center}
+.dn .g{font-size:13px;font-weight:600;margin-bottom:4px}
+.dn[data-g="A"] .g{color:#2563EB}
+.dn[data-g="B"] .g{color:#B45309}
+.dn .d{font-size:12px;color:#5B6B7B;margin-top:4px;line-height:1.35}
+svg text{font-family:"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif}
+.read{font-size:13px;margin:4px 0 0;font-variant-numeric:tabular-nums}
+.warn{font-size:13px;color:#B42318;margin:4px 0 0}
+.cap{font-size:12px;color:#5B6B7B;margin:10px 0 0}
+details{border-top:1px solid #E3E8EE}
+summary{cursor:pointer;padding:9px 16px;font-size:13px;font-weight:600;color:#334E68}
+details>div{padding:0 16px 12px;overflow:auto;max-height:360px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:5px 8px;border-bottom:1px solid #E3E8EE;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:12px;font-weight:600;color:#5B6B7B;position:sticky;top:0;background:#fff}
+tr.on td{background:#EFF4FF}
+.foot{max-width:1280px;margin:0 auto;padding:0 24px 28px;font-size:13px;color:#5B6B7B;display:flex;flex-wrap:wrap;gap:6px 18px}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}}
+@media (max-width:760px){.kpis{grid-template-columns:1fr 1fr;gap:10px}}
+@media (max-width:600px){.cmp{grid-template-columns:1fr}.donuts{justify-content:center}}
+@media (max-width:520px){
+  .top-in,.page,.foot{padding-left:14px;padding-right:14px}
+  .kpi{padding:10px 12px}
+  .kpi .v{font-size:24px}
+  .body{padding:12px 10px 10px}
+  .side{padding:6px 10px}
+}
+</style>
+<style>
+/* Portfolio presentation: clearer hierarchy, charts remain the primary content. */
+:root{--project-accent:#73598c}html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:#f5f7fa;font-size:14px;line-height:1.65;color:#202c3b}
+.top{position:sticky;top:0;z-index:20;background:#fff;border-top:3px solid var(--project-accent);box-shadow:0 1px 4px #192d4910}
+.top-in{max-width:1360px;padding:12px 28px}.page{max-width:1360px;padding:28px 28px 40px}
+.head{padding:0 0 22px;margin-bottom:22px;border-bottom:1px solid #dce2ea}
+.head h1{font-size:clamp(25px,2.4vw,34px);line-height:1.3;font-weight:700;letter-spacing:-.5px;margin-bottom:10px}
+.head p{max-width:850px;line-height:1.7;color:#607084}.card{border-color:#dce3eb;border-radius:10px;box-shadow:0 2px 7px #24364b04}
+.card-h{padding:18px 20px;border-bottom:1px solid #e7ecf2}.card-h h2{font-size:18px;font-weight:650}
+.body{padding:18px 20px}.kpi .v{font-size:30px;letter-spacing:-.6px}.kpi .l{font-size:13px}.kpi .s{line-height:1.6}
+.cap,figcaption{line-height:1.65;color:#607084}.seg{background:#f2f5f9}.lang button[aria-pressed="true"]{background:var(--project-accent)}
+table{font-variant-numeric:tabular-nums}tbody tr:nth-child(even){background:#f7f9fc}th{font-weight:600}
+.foot{max-width:1360px;margin:0 auto;padding:20px 28px;border-top:1px solid #dce2ea;font-size:13px}
+.jumpnav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}.jumpnav a{color:#4b5d73;text-decoration:none;font-size:13px;border:1px solid #dce3eb;padding:5px 12px;border-radius:5px;background:#fff}.jumpnav a:hover{color:var(--project-accent);border-color:var(--project-accent)}
+@media(max-width:650px){.page{padding:20px 14px}.top-in{padding:10px 14px}.head h1{font-size:25px}.body,.card-h{padding:14px}.foot{padding:18px 14px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.kpis{gap:18px}.grid{gap:24px}.donuts{gap:22px}.cmp{padding:12px 0}.head{border-bottom-color:#dcd3e6}.card-h{background:#fcfbfd}</style></head>
+<body>
+<header class="top"><div class="top-in">
+<nav data-i18n-attr="aria-label:nav.aria"><a data-i18n="nav.back" href="https://milanchen0307-cmyk.github.io/analytics-portfolio/"></a><a data-i18n="nav.repo" href="https://github.com/milanchen0307-cmyk/employee-attrition-insights"></a></nav>
+<div aria-label="语言 / Language" class="lang" role="group"><button aria-pressed="true" data-lang="zh" lang="zh-CN" type="button">中文</button><button aria-pressed="false" data-lang="en" lang="en" type="button">English</button></div>
+</div></header>
+<main class="page">
+<div class="head"><h1 id="at-h1"></h1><p data-i18n="dek"></p><nav aria-label="页面章节 / Page sections" class="jumpnav"><a href="#at-q-title"></a><a data-i18n="dep.h" href="#at-dep-h"></a></nav></div>
+<section class="kpis" data-i18n-attr="aria-label:kpi.aria" id="at-kpis"></section>
+<div class="qbar" data-i18n-attr="aria-label:qs.aria" id="at-qs" role="group"></div>
+<div class="card builder" hidden="" id="at-builder"><div class="side" data-g="A" id="at-side-A"></div><div class="side" data-g="B" id="at-side-B"></div></div>
+<div class="grid">
+<section aria-labelledby="at-q-title" class="card">
+<div class="card-h"><h2 id="at-q-title"></h2></div>
+<div class="body">
+<div class="cmp">
+<div class="donuts"><figure class="dn" data-g="A" id="at-A-dn"></figure><figure class="dn" data-g="B" id="at-B-dn"></figure></div>
+<div>
+<div id="at-int-host"><svg aria-labelledby="at-int-title at-int-desc" id="at-int" role="img"><title data-i18n="int.title" id="at-int-title"></title><desc id="at-int-desc"></desc></svg></div>
+<div aria-live="polite" id="at-read"></div>
+</div>
+</div>
+<p class="cap" id="at-cap"></p>
+</div>
+<details>
+<summary data-i18n="ct.sum"></summary>
+<div><table><caption class="sr" data-i18n="ct.cap"></caption><thead><tr><th data-i18n="th.dept" scope="col"></th><th data-i18n="th.ot" scope="col"></th><th data-i18n="th.wlb" scope="col"></th><th scope="col">n</th><th data-i18n="th.left" scope="col"></th><th data-i18n="th.rate" scope="col"></th><th data-i18n="th.in" scope="col"></th></tr></thead><tbody id="at-ct"></tbody></table></div>
+</details>
+</section>
+<section aria-labelledby="at-dep-h" class="card">
+<div class="card-h"><h2 data-i18n="dep.h" id="at-dep-h"></h2></div>
+<div class="body">
+<div id="at-dep-host"><svg aria-labelledby="at-dep-title at-dep-desc" id="at-dep" role="img"><title data-i18n="dep.title" id="at-dep-title"></title><desc id="at-dep-desc"></desc></svg></div>
+<p class="cap" id="at-dep-cap"></p>
+</div>
+<details>
+<summary data-i18n="dt.sum"></summary>
+<div><table><caption class="sr" data-i18n="dt.cap"></caption><thead><tr><th data-i18n="th.dept" scope="col"></th><th scope="col">n</th><th data-i18n="th.left" scope="col"></th><th data-i18n="th.rate" scope="col"></th><th scope="col">Wilson 95%</th></tr></thead><tbody id="at-dt"></tbody></table></div>
+</details>
+</section>
+</div>
+</main>
+<footer class="foot"><a data-i18n="nav.back" href="https://milanchen0307-cmyk.github.io/analytics-portfolio/"></a><a data-i18n="nav.repo" href="https://github.com/milanchen0307-cmyk/employee-attrition-insights"></a><a data-i18n="nav.method" href="https://github.com/milanchen0307-cmyk/employee-attrition-insights#readme"></a></footer>
+<script id="at-data" type="application/json">
+{"dataset":"Simulated employee attrition coursework dataset; not verified IBM employee records.","rows":1000,"left":189,"rate":0.189,
+"groups":[
+{"department":"Finance","overtime":"No","work_life_balance":1,"n":21,"left":1},
+{"department":"Finance","overtime":"No","work_life_balance":2,"n":23,"left":4},
+{"department":"Finance","overtime":"No","work_life_balance":3,"n":38,"left":6},
+{"department":"Finance","overtime":"No","work_life_balance":4,"n":26,"left":5},
+{"department":"Finance","overtime":"Yes","work_life_balance":1,"n":31,"left":9},
+{"department":"Finance","overtime":"Yes","work_life_balance":2,"n":27,"left":5},
+{"department":"Finance","overtime":"Yes","work_life_balance":3,"n":25,"left":4},
+{"department":"Finance","overtime":"Yes","work_life_balance":4,"n":27,"left":4},
+{"department":"HR","overtime":"No","work_life_balance":1,"n":30,"left":9},
+{"department":"HR","overtime":"No","work_life_balance":2,"n":25,"left":6},
+{"department":"HR","overtime":"No","work_life_balance":3,"n":27,"left":5},
+{"department":"HR","overtime":"No","work_life_balance":4,"n":27,"left":7},
+{"department":"HR","overtime":"Yes","work_life_balance":1,"n":18,"left":2},
+{"department":"HR","overtime":"Yes","work_life_balance":2,"n":30,"left":6},
+{"department":"HR","overtime":"Yes","work_life_balance":3,"n":29,"left":4},
+{"department":"HR","overtime":"Yes","work_life_balance":4,"n":25,"left":5},
+{"department":"IT","overtime":"No","work_life_balance":1,"n":21,"left":3},
+{"department":"IT","overtime":"No","work_life_balance":2,"n":18,"left":5},
+{"department":"IT","overtime":"No","work_life_balance":3,"n":19,"left":4},
+{"department":"IT","overtime":"No","work_life_balance":4,"n":16,"left":4},
+{"department":"IT","overtime":"Yes","work_life_balance":1,"n":21,"left":3},
+{"department":"IT","overtime":"Yes","work_life_balance":2,"n":31,"left":6},
+{"department":"IT","overtime":"Yes","work_life_balance":3,"n":28,"left":8},
+{"department":"IT","overtime":"Yes","work_life_balance":4,"n":20,"left":4},
+{"department":"Marketing","overtime":"No","work_life_balance":1,"n":23,"left":3},
+{"department":"Marketing","overtime":"No","work_life_balance":2,"n":26,"left":7},
+{"department":"Marketing","overtime":"No","work_life_balance":3,"n":33,"left":4},
+{"department":"Marketing","overtime":"No","work_life_balance":4,"n":31,"left":9},
+{"department":"Marketing","overtime":"Yes","work_life_balance":1,"n":28,"left":4},
+{"department":"Marketing","overtime":"Yes","work_life_balance":2,"n":17,"left":2},
+{"department":"Marketing","overtime":"Yes","work_life_balance":3,"n":23,"left":5},
+{"department":"Marketing","overtime":"Yes","work_life_balance":4,"n":17,"left":2},
+{"department":"Sales","overtime":"No","work_life_balance":1,"n":32,"left":4},
+{"department":"Sales","overtime":"No","work_life_balance":2,"n":24,"left":4},
+{"department":"Sales","overtime":"No","work_life_balance":3,"n":28,"left":3},
+{"department":"Sales","overtime":"No","work_life_balance":4,"n":24,"left":7},
+{"department":"Sales","overtime":"Yes","work_life_balance":1,"n":23,"left":4},
+{"department":"Sales","overtime":"Yes","work_life_balance":2,"n":25,"left":3},
+{"department":"Sales","overtime":"Yes","work_life_balance":3,"n":19,"left":5},
+{"department":"Sales","overtime":"Yes","work_life_balance":4,"n":24,"left":4}],
+"departments":[
+{"department":"Finance","n":218,"left":38,"rate":0.1743119266055046,"ci95":[0.12971063321745951,0.23019300974220186]},
+{"department":"HR","n":211,"left":44,"rate":0.20853080568720378,"ci95":[0.15916825212932603,0.26831692764963666]},
+{"department":"IT","n":174,"left":37,"rate":0.21264367816091953,"ci95":[0.15839311652016175,0.2793087485102923]},
+{"department":"Marketing","n":198,"left":36,"rate":0.18181818181818182,"ci95":[0.1343204258911728,0.24142768549914514]},
+{"department":"Sales","n":199,"left":34,"rate":0.1708542713567839,"ci95":[0.12491702424331041,0.22925884500638982]}],
+"limitations":"Descriptive associations only. Small groups are unstable. No employee-level predictions, causal claims, or employment decisions."}
+</script>
+<script>
+(function(){
+"use strict";
+var D=JSON.parse(document.getElementById('at-data').textContent);
+var NS='http://www.w3.org/2000/svg';
+var README='https://github.com/milanchen0307-cmyk/employee-attrition-insights#readme';
+function $(id){return document.getElementById(id);}
+function s(tag,attrs,parent,text){var e=document.createElementNS(NS,tag);if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function h(tag,attrs,parent,text){var e=document.createElement(tag);if(attrs)for(var k in attrs){if(k==='class')e.className=attrs[k];else e.setAttribute(k,attrs[k]);}if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function clear(e){while(e.firstChild)e.removeChild(e.firstChild);}
+function keepClear(svg){var keep=[svg.querySelector('title'),svg.querySelector('desc')];clear(svg);keep.forEach(function(k){if(k)svg.appendChild(k);});}
+function each(sel,fn){Array.prototype.forEach.call(document.querySelectorAll(sel),fn);}
+function pct(v,d){return (v*100).toFixed(d==null?1:d)+'%';}
+function n0(v){return Number(v).toLocaleString('en-US');}
+var Z=1.96;
+function wilson(k,n){if(!n)return [NaN,NaN];var p=k/n,z2=Z*Z,den=1+z2/n,c=(p+z2/(2*n))/den,hw=Z*Math.sqrt(p*(1-p)/n+z2/(4*n*n))/den;return [Math.max(0,c-hw),Math.min(1,c+hw)];}
+/* shared rate axis: at least 0–30%, extended in 5-point steps when any value needs more room */
+function axisTop(vals){var mx=Math.max.apply(null,vals.filter(function(v){return isFinite(v);}));return Math.min(1,Math.max(0.3,Math.ceil((mx+0.02)*20)/20));}
+function tickStep(top){return top<=0.4?0.05:top<=0.8?0.1:0.2;}
+
+var DEPTS=D.departments.map(function(d){return d.department;});
+var G=D.groups;
+var sumN=G.reduce(function(a,g){return a+g.n;},0),sumL=G.reduce(function(a,g){return a+g.left;},0);
+
+/* ---------- language ---------- */
+var LS_KEY='yc-preview-lang';
+var lang=(function(){try{var v=window.localStorage.getItem(LS_KEY);if(v==='zh'||v==='en')return v;}catch(e){}return 'zh';})();
+var I18N={
+en:{
+'meta.title':'Employee attrition group comparison · simulated data',
+'meta.desc':'Attrition rates, actual counts and Wilson 95% intervals for groups in a 1,000-person simulated coursework dataset.',
+'nav.aria':'Page navigation','nav.back':'← Back to portfolio','nav.repo':'Repository ↗','nav.method':'Method notes ↗',
+'h1':function(n){return 'Employee attrition by group (simulated data, '+n+' people)';},
+'dek':'Explore attrition across five departments, overtime groups and work-life balance codes.',
+'kpi.aria':'Dataset summary','kpi.n':'People','kpi.n.s':'Simulated records','kpi.left':'Left','kpi.left.s':function(p){return p+' of all people';},
+'kpi.otY':'Overtime: attrition','kpi.otN':'No overtime: attrition','kpi.cnt':function(l,n){return l+' / '+n+' people';},
+'qs.aria':'Comparison','qs.lab':'Compare:',
+'q.ot':'Overtime yes vs no','q.w14':'WLB code 1 vs code 4','q.it':'IT vs other departments','q.fin':'Within Finance: overtime yes vs no','q.custom':'Custom',
+'b.group':function(g){return 'Group '+g;},'b.dept':'Department','b.all':'All','b.allbut':function(d){return 'All but '+d;},
+'b.ot':'Overtime','b.any':'Any','b.wlb':'WLB code',
+'b.aDept':function(g){return 'Group '+g+' department';},'b.aOt':function(g){return 'Group '+g+' overtime';},
+'b.aWlb':function(g){return 'Group '+g+' WLB codes';},'b.aCk':function(g,w){return 'Group '+g+' WLB code '+w;},
+'desc.all':'All departments','desc.except':function(d){return 'All except '+d;},
+'desc.ot':function(o){return 'overtime '+o;},'desc.wlb':function(w){return 'WLB code '+(w.length?w.join(', '):'none');},
+'ot.Yes':'yes','ot.No':'no','ot.YesT':'Yes','ot.NoT':'No',
+'int.title':'Attrition rate by group with Wilson 95% intervals',
+'overall':function(p){return 'overall '+p;},'axis':'attrition rate','int.none':'no records selected',
+'r.diff':function(d,a,b){return 'A − B = '+d+' percentage points ('+a+' vs '+b+')';},
+'r.shared':function(k,n){return 'The groups share '+k+' cell'+(k===1?'':'s')+' ('+n+' people), so they are not independent.';},
+'r.empty':'Select at least one record in each group.',
+'cap':'Bars share one axis; thin line = Wilson 95% interval; dashed = overall rate. Descriptive comparison, no between-group test. ',
+'cap.wlb':'WLB code direction is unverified. ',
+'dn.desc':function(g,d,p,l,n){return 'Group '+g+', '+d+': '+p+' left, '+l+' of '+n+'.';},
+'r.desc':function(a,b,ov){return a+' '+b+' Overall rate '+ov+'.';},
+'ci.desc':function(g,p,lo,hi,n){return 'Group '+g+' '+p+', interval '+lo+' to '+hi+', n = '+n+'.';},
+'ct.sum':'View all 40 cells','ct.cap':'Left and group size for every department, overtime and WLB code cell',
+'th.dept':'Department','th.ot':'Overtime','th.wlb':'WLB code','th.left':'Left','th.rate':'Rate','th.in':'In group',
+'dep.h':'Attrition by department','dep.title':'Department attrition rates with Wilson 95% intervals',
+'dep.cap':'Bar = attrition rate; thin line = Wilson 95% interval; dashed = overall rate.',
+'dep.desc':function(items){return items.map(function(x){return x[0]+' '+x[1]+', interval '+x[2]+' to '+x[3]+', '+x[4]+' of '+x[5];}).join('; ')+'.';},
+'dt.sum':'Department table','dt.cap':'Department attrition with Wilson 95% intervals'
+},
+zh:{
+'meta.title':'员工离职分组对比 · 模拟数据',
+'meta.desc':'1,000 人模拟课程数据集中的员工离职分组对比：离职率、实际人数和 Wilson 95% 区间。',
+'nav.aria':'页面导航','nav.back':'← 返回作品集','nav.repo':'仓库 ↗','nav.method':'方法说明 ↗',
+'h1':function(n){return '员工离职分组对比（模拟数据，'+n+' 人）';},
+'dek':'按部门、加班情况和工作生活平衡代码，探索不同员工群体的离职比例。',
+'kpi.aria':'数据概况','kpi.n':'总人数','kpi.n.s':'模拟记录','kpi.left':'离职人数','kpi.left.s':function(p){return '占总人数 '+p;},
+'kpi.otY':'加班 · 离职率','kpi.otN':'不加班 · 离职率','kpi.cnt':function(l,n){return l+' / '+n+' 人';},
+'qs.aria':'对比问题','qs.lab':'对比：',
+'q.ot':'加班 是 vs 否','q.w14':'WLB 代码 1 vs 代码 4','q.it':'IT vs 其他部门','q.fin':'财务部门内：加班 是 vs 否','q.custom':'自定义',
+'b.group':function(g){return g+' 组';},'b.dept':'部门','b.all':'全部','b.allbut':function(d){return '除'+d+'外';},
+'b.ot':'加班','b.any':'不限','b.wlb':'WLB 代码',
+'b.aDept':function(g){return g+' 组部门';},'b.aOt':function(g){return g+' 组是否加班';},
+'b.aWlb':function(g){return g+' 组 WLB 代码';},'b.aCk':function(g,w){return g+' 组 WLB 代码 '+w;},
+'desc.all':'全部部门','desc.except':function(d){return '除'+d+'外';},
+'desc.ot':function(o){return '加班：'+o;},'desc.wlb':function(w){return 'WLB 代码 '+(w.length?w.join('、'):'无');},
+'ot.Yes':'是','ot.No':'否','ot.YesT':'是','ot.NoT':'否',
+'int.title':'各组离职率及 Wilson 95% 区间',
+'overall':function(p){return '总体 '+p;},'axis':'离职率','int.none':'未选中任何记录',
+'r.diff':function(d,a,b){return 'A − B = '+d+' 个百分点（'+a+' vs '+b+'）';},
+'r.shared':function(k,n){return '两组有 '+k+' 个单元格重叠（'+n+' 人），并非相互独立。';},
+'r.empty':'请在两组中都至少选中一条记录。',
+'cap':'两条横条共用同一坐标轴；细线 = Wilson 95% 区间；虚线 = 总体离职率。描述性对比，未做组间检验。',
+'cap.wlb':'WLB 代码方向未确认。',
+'dn.desc':function(g,d,p,l,n){return g+' 组（'+d+'）：离职 '+p+'，'+n+' 人中 '+l+' 人。';},
+'r.desc':function(a,b,ov){return a+b+'总体离职率 '+ov+'。';},
+'ci.desc':function(g,p,lo,hi,n){return g+' 组 '+p+'，区间 '+lo+' 到 '+hi+'，n = '+n+'。';},
+'ct.sum':'查看 40 个单元格明细','ct.cap':'每个部门、加班状态和 WLB 代码组合的离职人数与组内人数',
+'th.dept':'部门','th.ot':'加班','th.wlb':'WLB 代码','th.left':'离职','th.rate':'离职率','th.in':'所属组',
+'dep.h':'各部门离职率','dep.title':'各部门离职率及 Wilson 95% 区间',
+'dep.cap':'横条 = 离职率；细线 = Wilson 95% 区间；虚线 = 总体离职率。',
+'dep.desc':function(items){return items.map(function(x){return x[0]+' '+x[1]+'，区间 '+x[2]+' 到 '+x[3]+'，'+x[5]+' 人中 '+x[4]+' 人离职';}).join('；')+'。';},
+'dt.sum':'部门数据表','dt.cap':'各部门离职率及 Wilson 95% 区间',
+'dept.Finance':'财务','dept.HR':'人力资源','dept.Marketing':'市场营销','dept.Sales':'销售'
+}};
+function T(k){var v=I18N[lang][k];if(v==null)v=I18N.en[k];if(v==null)return k;if(typeof v==='function')return v.apply(null,Array.prototype.slice.call(arguments,1));return v;}
+function applyStatic(){
+  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+  document.title=T('meta.title');
+  var md=document.querySelector('meta[name="description"]');if(md)md.setAttribute('content',T('meta.desc'));
+  each('[data-i18n]',function(el){el.textContent=T(el.getAttribute('data-i18n'));});
+  each('[data-i18n-attr]',function(el){el.getAttribute('data-i18n-attr').split(';').forEach(function(p){var kv=p.split(':');el.setAttribute(kv[0],T(kv[1]));});});
+  each('[data-lang]',function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===lang?'true':'false');});
+  $('at-h1').textContent=T('h1',n0(sumN));
+}
+/* department names and Yes/No are data values; translate only for display */
+function dn(d){return I18N[lang]['dept.'+d]||d;}
+function ot(o){return T('ot.'+o);}
+
+/* ---------- selection model ---------- */
+function makeSel(dept,o,wlb){return {dept:dept,ot:o,wlb:wlb.slice()};}
+function match(sel,g){return (sel.dept==='all'||(sel.dept.charAt(0)==='!'?g.department!==sel.dept.slice(1):g.department===sel.dept))&&(sel.ot==='any'||g.overtime===sel.ot)&&sel.wlb.indexOf(g.work_life_balance)>=0;}
+function agg(sel){var cells=G.filter(function(g){return match(sel,g);});return {cells:cells,n:cells.reduce(function(a,g){return a+g.n;},0),left:cells.reduce(function(a,g){return a+g.left;},0)};}
+function describe(sel){
+  var parts=[];
+  if(sel.dept==='all')parts.push(T('desc.all'));else if(sel.dept.charAt(0)==='!')parts.push(T('desc.except',dn(sel.dept.slice(1))));else parts.push(dn(sel.dept));
+  if(sel.ot!=='any')parts.push(T('desc.ot',ot(sel.ot)));
+  var w=sel.wlb.slice().sort();if(w.length<4)parts.push(T('desc.wlb',w));
+  return parts.join(' · ');
+}
+var ALL=[1,2,3,4];
+var QS=[
+  {id:'ot',A:makeSel('all','Yes',ALL),B:makeSel('all','No',ALL)},
+  {id:'w14',A:makeSel('all','any',[1]),B:makeSel('all','any',[4])},
+  {id:'it',A:makeSel('IT','any',ALL),B:makeSel('!IT','any',ALL)},
+  {id:'fin',A:makeSel('Finance','Yes',ALL),B:makeSel('Finance','No',ALL)}
+];
+var state={q:'ot',A:null,B:null};
+var COL={A:'#2563EB',B:'#D97706'};
+
+function renderKpis(){
+  var host=$('at-kpis');clear(host);
+  var y=agg(QS[0].A),n=agg(QS[0].B);
+  function card(l,v,sub){var d=h('div',{class:'kpi'},host);h('div',{class:'l'},d,l);h('div',{class:'v'},d,v);h('div',{class:'s'},d,sub);}
+  card(T('kpi.n'),n0(sumN),T('kpi.n.s'));
+  card(T('kpi.left'),n0(sumL),T('kpi.left.s',pct(sumL/sumN)));
+  card(T('kpi.otY'),pct(y.left/y.n),T('kpi.cnt',n0(y.left),n0(y.n)));
+  card(T('kpi.otN'),pct(n.left/n.n),T('kpi.cnt',n0(n.left),n0(n.n)));
+}
+
+/* question bar */
+function buildQs(){
+  var host=$('at-qs');clear(host);h('span',null,host,T('qs.lab'));
+  QS.map(function(q){return q.id;}).concat(['custom']).forEach(function(id){
+    var b=h('button',{type:'button',class:'qb','data-q':id,'aria-pressed':String(state.q===id)},host,T('q.'+id));
+    b.addEventListener('click',function(){if(id==='custom'){state.q='custom';render();}else applyQ(id);});
+  });
+}
+
+/* custom builder (rebuilt on language change, then refilled from state) */
+var builder={};
+function buildBuilder(){
+  ['A','B'].forEach(function(gk){
+    var box=$('at-side-'+gk);clear(box);h('b',null,box,T('b.group',gk));
+    var l1=h('label',null,box,T('b.dept'));var ds=h('select',{'aria-label':T('b.aDept',gk)},l1);
+    h('option',{value:'all'},ds,T('b.all'));DEPTS.forEach(function(d){h('option',{value:d},ds,dn(d));});DEPTS.forEach(function(d){h('option',{value:'!'+d},ds,T('b.allbut',dn(d)));});
+    var l2=h('label',null,box,T('b.ot'));var os=h('select',{'aria-label':T('b.aOt',gk)},l2);
+    [['any',T('b.any')],['Yes',T('ot.YesT')],['No',T('ot.NoT')]].forEach(function(o){h('option',{value:o[0]},os,o[1]);});
+    var grp=h('span',{role:'group','aria-label':T('b.aWlb',gk)},box);grp.appendChild(document.createTextNode(T('b.wlb')+' '));
+    var cks=ALL.map(function(w){var l=h('label',{class:'ck'},grp);var c=h('input',{type:'checkbox',value:String(w),'aria-label':T('b.aCk',gk,w)},l);l.appendChild(document.createTextNode(String(w)+' '));return c;});
+    builder[gk]={ds:ds,os:os,cks:cks};
+    function onChange(){state.q='custom';state[gk]=readSide(gk);render();}
+    ds.addEventListener('change',onChange);os.addEventListener('change',onChange);cks.forEach(function(c){c.addEventListener('change',onChange);});
+    if(state[gk])writeSide(gk,state[gk]);
+  });
+}
+function readSide(gk){var b=builder[gk];return makeSel(b.ds.value,b.os.value,b.cks.filter(function(c){return c.checked;}).map(function(c){return +c.value;}));}
+function writeSide(gk,sel){var b=builder[gk];if(!b)return;b.ds.value=sel.dept;b.os.value=sel.ot;b.cks.forEach(function(c){c.checked=sel.wlb.indexOf(+c.value)>=0;});}
+function applyQ(id){var q=QS.filter(function(x){return x.id===id;})[0];state.q=id;state.A=makeSel(q.A.dept,q.A.ot,q.A.wlb);state.B=makeSel(q.B.dept,q.B.ot,q.B.wlb);writeSide('A',state.A);writeSide('B',state.B);render();}
+
+/* donut: left share of the group's own total */
+function donut(fig,gk,a,sel){
+  clear(fig);h('div',{class:'g'},fig,T('b.group',gk));
+  var S=120,r=53,sw=14,C=2*Math.PI*r;
+  var svg=s('svg',{width:S,height:S,viewBox:'0 0 '+S+' '+S,role:'img'},fig);
+  var p=a.n?a.left/a.n:0;
+  s('title',null,svg,a.n?T('dn.desc',gk,describe(sel),pct(p),n0(a.left),n0(a.n)):T('int.none'));
+  s('circle',{cx:S/2,cy:S/2,r:r,fill:'none',stroke:'#E6EAF0','stroke-width':sw},svg);
+  if(a.n&&a.left)s('circle',{cx:S/2,cy:S/2,r:r,fill:'none',stroke:COL[gk],'stroke-width':sw,'stroke-dasharray':(p*C)+' '+C,transform:'rotate(-90 '+S/2+' '+S/2+')'},svg);
+  s('text',{x:S/2,y:S/2+3,'text-anchor':'middle','font-size':22,'font-weight':600,fill:'#1F2933'},svg,a.n?pct(p):'—');
+  s('text',{x:S/2,y:S/2+22,'text-anchor':'middle','font-size':12,fill:'#5B6B7B'},svg,n0(a.left)+'/'+n0(a.n));
+  h('div',{class:'d'},fig,describe(sel));
+}
+
+/* comparison bars on one shared axis */
+var svgI=$('at-int');
+function drawCompare(a,b,ciA,ciB){
+  var W=Math.max(240,$('at-int-host').clientWidth),narrow=W<380;
+  var m={l:22,r:narrow?70:84,t:22,b:30},rowH=40,H=m.t+rowH*2+m.b;
+  svgI.setAttribute('viewBox','0 0 '+W+' '+H);svgI.setAttribute('width',W);svgI.setAttribute('height',H);keepClear(svgI);
+  var ov=sumL/sumN;
+  var top=axisTop([ciA[1],ciB[1],a.n?a.left/a.n:NaN,b.n?b.left/b.n:NaN,ov]),stp=tickStep(top);
+  var x=function(v){return m.l+v/top*(W-m.l-m.r);};
+  for(var t=0;t<=top+1e-9;t+=stp){var tt=Math.round(t*100)/100;s('line',{x1:x(tt),x2:x(tt),y1:m.t-4,y2:H-m.b,stroke:'#EEF1F4'},svgI);s('text',{x:x(tt),y:H-m.b+16,'text-anchor':'middle','font-size':12,fill:'#5B6B7B'},svgI,Math.round(tt*100)+'%');}
+  [['A',a,ciA],['B',b,ciB]].forEach(function(r,i){
+    var cy=m.t+rowH*i+rowH/2,c=COL[r[0]];
+    s('text',{x:m.l-8,y:cy+5,'text-anchor':'end','font-size':14,'font-weight':600,fill:c},svgI,r[0]);
+    if(!r[1].n){s('text',{x:m.l+4,y:cy+5,'font-size':12,fill:'#5B6B7B'},svgI,T('int.none'));return;}
+    var p=r[1].left/r[1].n;
+    s('rect',{x:x(0),y:cy-10,width:Math.max(1,x(p)-x(0)),height:20,rx:2,fill:c,'fill-opacity':.85},svgI);
+    s('line',{x1:x(r[2][0]),x2:x(r[2][1]),y1:cy,y2:cy,stroke:'#1F2933','stroke-width':1.5},svgI);
+    [r[2][0],r[2][1]].forEach(function(v){s('line',{x1:x(v),x2:x(v),y1:cy-5,y2:cy+5,stroke:'#1F2933','stroke-width':1.5},svgI);});
+    s('text',{x:Math.max(x(p),x(r[2][1]))+6,y:cy+5,'font-size':13,'font-weight':600,fill:'#1F2933'},svgI,pct(p));
+  });
+  s('line',{x1:x(ov),x2:x(ov),y1:m.t-6,y2:H-m.b,stroke:'#5B6B7B','stroke-dasharray':'4 3'},svgI);
+  s('text',{x:x(ov),y:m.t-9,'text-anchor':'middle','font-size':12,fill:'#5B6B7B'},svgI,T('overall',pct(ov)));
+}
+
+/* ---------- main render ---------- */
+function render(){
+  each('.qb',function(b){b.setAttribute('aria-pressed',b.getAttribute('data-q')===state.q?'true':'false');});
+  $('at-builder').hidden=state.q!=='custom';
+  $('at-q-title').textContent=T('q.'+state.q);
+  var a=agg(state.A),b=agg(state.B),ciA=wilson(a.left,a.n),ciB=wilson(b.left,b.n);
+  donut($('at-A-dn'),'A',a,state.A);donut($('at-B-dn'),'B',b,state.B);
+  drawCompare(a,b,ciA,ciB);
+  var rd=$('at-read');clear(rd);
+  var shared=a.cells.filter(function(c){return b.cells.indexOf(c)>=0;});
+  if(shared.length)h('p',{class:'warn'},rd,T('r.shared',shared.length,n0(shared.reduce(function(t,c){return t+c.n;},0))));
+  if(a.n&&b.n){
+    var pa=a.left/a.n,pb=b.left/b.n,diff=(pa-pb)*100;
+    h('p',{class:'read'},rd,T('r.diff',(diff>0?'+':diff<0?'−':'±')+Math.abs(diff).toFixed(1),pct(pa),pct(pb)));
+    $('at-int-desc').textContent=T('r.desc',T('ci.desc','A',pct(pa),pct(ciA[0]),pct(ciA[1]),a.n),T('ci.desc','B',pct(pb),pct(ciB[0]),pct(ciB[1]),b.n),pct(sumL/sumN));
+  }else{h('p',{class:'read'},rd,T('r.empty'));$('at-int-desc').textContent=T('r.empty');}
+  var cap=$('at-cap');clear(cap);
+  var usesWlb=state.A.wlb.length<4||state.B.wlb.length<4;
+  cap.appendChild(document.createTextNode(T('cap')+(usesWlb?T('cap.wlb'):'')));h('a',{href:README},cap,T('nav.method'));
+  renderCells(a,b);
+}
+
+/* 40-cell table marks which group each cell belongs to */
+function renderCells(a,b){
+  var ct=$('at-ct');clear(ct);
+  G.forEach(function(g){var inA=a.cells.indexOf(g)>=0,inB=b.cells.indexOf(g)>=0;
+    var tr=h('tr',{class:inA||inB?'on':''},ct);h('td',null,tr,dn(g.department));h('td',null,tr,T('ot.'+g.overtime+'T'));h('td',null,tr,String(g.work_life_balance));h('td',null,tr,String(g.n));h('td',null,tr,String(g.left));h('td',null,tr,pct(g.left/g.n));
+    h('td',null,tr,[inA?'A':'',inB?'B':''].filter(Boolean).join(' + '));});
+}
+
+/* ---------- department chart ---------- */
+var svgD=$('at-dep');
+function drawDept(){
+  var W=Math.max(260,$('at-dep-host').clientWidth),narrow=W<420;
+  var m={l:narrow?84:100,r:narrow?52:60,t:22,b:30},rowH=narrow?40:44,H=m.t+DEPTS.length*rowH+m.b;
+  svgD.setAttribute('viewBox','0 0 '+W+' '+H);svgD.setAttribute('width',W);svgD.setAttribute('height',H);keepClear(svgD);
+  var ov=sumL/sumN;
+  var top=axisTop(D.departments.map(function(d){return d.ci95[1];}).concat([ov])),stp=tickStep(top);
+  var x=function(v){return m.l+v/top*(W-m.l-m.r);};
+  for(var t=0;t<=top+1e-9;t+=stp){var tt=Math.round(t*100)/100;s('line',{x1:x(tt),x2:x(tt),y1:m.t-4,y2:H-m.b,stroke:'#EEF1F4'},svgD);s('text',{x:x(tt),y:H-m.b+16,'text-anchor':'middle','font-size':12,fill:'#5B6B7B'},svgD,Math.round(tt*100)+'%');}
+  D.departments.forEach(function(d,i){
+    var cy=m.t+i*rowH+rowH/2;
+    s('text',{x:m.l-10,y:cy,'text-anchor':'end','font-size':14,fill:'#1F2933'},svgD,dn(d.department));
+    s('text',{x:m.l-10,y:cy+14,'text-anchor':'end','font-size':12,fill:'#5B6B7B'},svgD,d.left+'/'+d.n);
+    s('rect',{x:x(0),y:cy-9,width:Math.max(1,x(d.rate)-x(0)),height:18,rx:2,fill:'#93B4F5'},svgD);
+    s('line',{x1:x(d.ci95[0]),x2:x(d.ci95[1]),y1:cy,y2:cy,stroke:'#1F2933','stroke-width':1.5},svgD);
+    [d.ci95[0],d.ci95[1]].forEach(function(v){s('line',{x1:x(v),x2:x(v),y1:cy-5,y2:cy+5,stroke:'#1F2933','stroke-width':1.5},svgD);});
+    s('text',{x:x(Math.max(d.rate,d.ci95[1]))+6,y:cy+5,'font-size':13,fill:'#1F2933'},svgD,pct(d.rate));
+  });
+  s('line',{x1:x(ov),x2:x(ov),y1:m.t-6,y2:H-m.b,stroke:'#5B6B7B','stroke-dasharray':'4 3'},svgD);
+  s('text',{x:x(ov),y:m.t-9,'text-anchor':'middle','font-size':12,fill:'#5B6B7B'},svgD,T('overall',pct(ov)));
+  $('at-dep-cap').textContent=T('dep.cap');
+  $('at-dep-desc').textContent=T('dep.desc',D.departments.map(function(d){return [dn(d.department),pct(d.rate),pct(d.ci95[0]),pct(d.ci95[1]),d.left,d.n];}));
+}
+function renderDeptTable(){
+  var tb=$('at-dt');clear(tb);
+  D.departments.forEach(function(d){var tr=h('tr',null,tb);h('td',null,tr,dn(d.department));h('td',null,tr,String(d.n));h('td',null,tr,String(d.left));h('td',null,tr,pct(d.rate));h('td',null,tr,pct(d.ci95[0])+' – '+pct(d.ci95[1]));});
+}
+
+/* language switch: rebuild translated pieces, keep the current comparison */
+function renderLang(){applyStatic();renderKpis();buildQs();buildBuilder();renderDeptTable();render();drawDept();}
+each('[data-lang]',function(btn){btn.addEventListener('click',function(){
+  lang=btn.getAttribute('data-lang');
+  try{window.localStorage.setItem(LS_KEY,lang);}catch(e){}
+  renderLang();
+});});
+
+applyQ('ot');renderLang();
+var rt=null;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){render();drawDept();},140);});
+})();
+</script>
+</body>
+</html>

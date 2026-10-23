@@ -1,0 +1,341 @@
+{
+  "dataset": "Simulated employee attrition coursework dataset; not verified IBM employee records.",
+  "rows": 1000,
+  "left": 189,
+  "rate": 0.189,
+  "groups": [
+    {
+      "department": "Finance",
+      "overtime": "No",
+      "work_life_balance": 1,
+      "n": 21,
+      "left": 1
+    },
+    {
+      "department": "Finance",
+      "overtime": "No",
+      "work_life_balance": 2,
+      "n": 23,
+      "left": 4
+    },
+    {
+      "department": "Finance",
+      "overtime": "No",
+      "work_life_balance": 3,
+      "n": 38,
+      "left": 6
+    },
+    {
+      "department": "Finance",
+      "overtime": "No",
+      "work_life_balance": 4,
+      "n": 26,
+      "left": 5
+    },
+    {
+      "department": "Finance",
+      "overtime": "Yes",
+      "work_life_balance": 1,
+      "n": 31,
+      "left": 9
+    },
+    {
+      "department": "Finance",
+      "overtime": "Yes",
+      "work_life_balance": 2,
+      "n": 27,
+      "left": 5
+    },
+    {
+      "department": "Finance",
+      "overtime": "Yes",
+      "work_life_balance": 3,
+      "n": 25,
+      "left": 4
+    },
+    {
+      "department": "Finance",
+      "overtime": "Yes",
+      "work_life_balance": 4,
+      "n": 27,
+      "left": 4
+    },
+    {
+      "department": "HR",
+      "overtime": "No",
+      "work_life_balance": 1,
+      "n": 30,
+      "left": 9
+    },
+    {
+      "department": "HR",
+      "overtime": "No",
+      "work_life_balance": 2,
+      "n": 25,
+      "left": 6
+    },
+    {
+      "department": "HR",
+      "overtime": "No",
+      "work_life_balance": 3,
+      "n": 27,
+      "left": 5
+    },
+    {
+      "department": "HR",
+      "overtime": "No",
+      "work_life_balance": 4,
+      "n": 27,
+      "left": 7
+    },
+    {
+      "department": "HR",
+      "overtime": "Yes",
+      "work_life_balance": 1,
+      "n": 18,
+      "left": 2
+    },
+    {
+      "department": "HR",
+      "overtime": "Yes",
+      "work_life_balance": 2,
+      "n": 30,
+      "left": 6
+    },
+    {
+      "department": "HR",
+      "overtime": "Yes",
+      "work_life_balance": 3,
+      "n": 29,
+      "left": 4
+    },
+    {
+      "department": "HR",
+      "overtime": "Yes",
+      "work_life_balance": 4,
+      "n": 25,
+      "left": 5
+    },
+    {
+      "department": "IT",
+      "overtime": "No",
+      "work_life_balance": 1,
+      "n": 21,
+      "left": 3
+    },
+    {
+      "department": "IT",
+      "overtime": "No",
+      "work_life_balance": 2,
+      "n": 18,
+      "left": 5
+    },
+    {
+      "department": "IT",
+      "overtime": "No",
+      "work_life_balance": 3,
+      "n": 19,
+      "left": 4
+    },
+    {
+      "department": "IT",
+      "overtime": "No",
+      "work_life_balance": 4,
+      "n": 16,
+      "left": 4
+    },
+    {
+      "department": "IT",
+      "overtime": "Yes",
+      "work_life_balance": 1,
+      "n": 21,
+      "left": 3
+    },
+    {
+      "department": "IT",
+      "overtime": "Yes",
+      "work_life_balance": 2,
+      "n": 31,
+      "left": 6
+    },
+    {
+      "department": "IT",
+      "overtime": "Yes",
+      "work_life_balance": 3,
+      "n": 28,
+      "left": 8
+    },
+    {
+      "department": "IT",
+      "overtime": "Yes",
+      "work_life_balance": 4,
+      "n": 20,
+      "left": 4
+    },
+    {
+      "department": "Marketing",
+      "overtime": "No",
+      "work_life_balance": 1,
+      "n": 23,
+      "left": 3
+    },
+    {
+      "department": "Marketing",
+      "overtime": "No",
+      "work_life_balance": 2,
+      "n": 26,
+      "left": 7
+    },
+    {
+      "department": "Marketing",
+      "overtime": "No",
+      "work_life_balance": 3,
+      "n": 33,
+      "left": 4
+    },
+    {
+      "department": "Marketing",
+      "overtime": "No",
+      "work_life_balance": 4,
+      "n": 31,
+      "left": 9
+    },
+    {
+      "department": "Marketing",
+      "overtime": "Yes",
+      "work_life_balance": 1,
+      "n": 28,
+      "left": 4
+    },
+    {
+      "department": "Marketing",
+      "overtime": "Yes",
+      "work_life_balance": 2,
+      "n": 17,
+      "left": 2
+    },
+    {
+      "department": "Marketing",
+      "overtime": "Yes",
+      "work_life_balance": 3,
+      "n": 23,
+      "left": 5
+    },
+    {
+      "department": "Marketing",
+      "overtime": "Yes",
+      "work_life_balance": 4,
+      "n": 17,
+      "left": 2
+    },
+    {
+      "department": "Sales",
+      "overtime": "No",
+      "work_life_balance": 1,
+      "n": 32,
+      "left": 4
+    },
+    {
+      "department": "Sales",
+      "overtime": "No",
+      "work_life_balance": 2,
+      "n": 24,
+      "left": 4
+    },
+    {
+      "department": "Sales",
+      "overtime": "No",
+      "work_life_balance": 3,
+      "n": 28,
+      "left": 3
+    },
+    {
+      "department": "Sales",
+      "overtime": "No",
+      "work_life_balance": 4,
+      "n": 24,
+      "left": 7
+    },
+    {
+      "department": "Sales",
+      "overtime": "Yes",
+      "work_life_balance": 1,
+      "n": 23,
+      "left": 4
+    },
+    {
+      "department": "Sales",
+      "overtime": "Yes",
+      "work_life_balance": 2,
+      "n": 25,
+      "left": 3
+    },
+    {
+      "department": "Sales",
+      "overtime": "Yes",
+      "work_life_balance": 3,
+      "n": 19,
+      "left": 5
+    },
+    {
+      "department": "Sales",
+      "overtime": "Yes",
+      "work_life_balance": 4,
+      "n": 24,
+      "left": 4
+    }
+  ],
+  "departments": [
+    {
+      "department": "Finance",
+      "n": 218,
+      "left": 38,
+      "rate": 0.1743119266055046,
+      "ci95": [
+        0.12971063321745951,
+        0.23019300974220186
+      ]
+    },
+    {
+      "department": "HR",
+      "n": 211,
+      "left": 44,
+      "rate": 0.20853080568720378,
+      "ci95": [
+        0.15916825212932603,
+        0.26831692764963666
+      ]
+    },
+    {
+      "department": "IT",
+      "n": 174,
+      "left": 37,
+      "rate": 0.21264367816091953,
+      "ci95": [
+        0.15839311652016175,
+        0.2793087485102923
+      ]
+    },
+    {
+      "department": "Marketing",
+      "n": 198,
+      "left": 36,
+      "rate": 0.18181818181818182,
+      "ci95": [
+        0.1343204258911728,
+        0.24142768549914514
+      ]
+    },
+    {
+      "department": "Sales",
+      "n": 199,
+      "left": 34,
+      "rate": 0.1708542713567839,
+      "ci95": [
+        0.12491702424331041,
+        0.22925884500638982
+      ]
+    }
+  ],
+  "limitations": "Descriptive associations only. Small groups are unstable. No employee-level predictions, causal claims, or employment decisions."
+}
